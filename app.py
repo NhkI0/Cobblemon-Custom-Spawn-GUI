@@ -10,6 +10,8 @@ import re
 
 import streamlit as st
 
+from get_default_pokemons import reset
+
 SPAWN_DIR = os.path.join(os.path.dirname(__file__), ".default", "spawn_pool_world")
 
 BUCKETS = ["common", "uncommon", "rare", "ultra-rare"]
@@ -65,7 +67,7 @@ def load_pokemon_files():
 
 @st.cache_data
 def load_pokemon_names():
-    """Return sorted list of valid pokemon names from spawn files."""
+    """Return sorted list of valid Pokémon names from spawn files."""
     names = set()
     for path in glob.glob(os.path.join(SPAWN_DIR, "*.json")):
         fname = os.path.basename(path)
@@ -438,17 +440,16 @@ def render_spawn(spawn, idx, key_prefix):
     return result, False
 
 
-# ---------------------------------------------------------------------------
-# Main app
-# ---------------------------------------------------------------------------
-
 def main():
     st.set_page_config(page_title="Cobblemon Spawn Editor", layout="wide")
-    st.title("Cobblemon Spawn Editor")
+    with st.spinner("Downloading file...", show_time=True):
+        st.title("Cobblemon Spawn Editor")
 
     if not os.path.isdir(SPAWN_DIR):
         st.error(f"Spawn directory not found: `{SPAWN_DIR}`\n\nRun `python get_default_pokemons.py` first.")
-        return
+        with st.spinner("Downloading", show_time=True):
+            reset()
+            st.rerun()
 
     files = load_pokemon_files()
     if not files:
@@ -472,6 +473,12 @@ def main():
         if not selected_display:
             return
         selected_file = options[selected_display]
+
+        st.divider()
+        if st.button("Restore to default", type="primary", use_container_width=True):
+            with st.spinner("Downloading", show_time=True):
+                reset()
+                st.rerun()
 
     # Use selected file as key prefix so each Pokémon gets isolated widget state
     fk = selected_file.replace(".", "_")
