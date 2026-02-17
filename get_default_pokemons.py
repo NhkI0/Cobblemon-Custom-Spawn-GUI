@@ -9,6 +9,7 @@ import os
 import re
 import sys
 import tarfile
+from shutil import rmtree
 
 try:
     import requests
@@ -134,7 +135,8 @@ def create_blank_spawns(output, existing_files, species):
     print(f"\t{count} blank spawn file(s) created for missing Pokémon.")
 
 
-def download():
+def get_default():
+    """Get all the default spawn pools and species. Generate blanks for the ones that don't already exist."""
     output = os.path.abspath(OUTPUT_DIR)
     print(f"Output directory: {output}\n")
 
@@ -146,5 +148,11 @@ def download():
     print(f"\nDone! {total} total file(s) in {output}")
 
 
+def reset():
+    """Reset all existing spawn pools to their initial state."""
+    rmtree(OUTPUT_DIR, ignore_errors=True)
+    get_default()
+
+
 if __name__ == "__main__":
-    download()
+    reset()
