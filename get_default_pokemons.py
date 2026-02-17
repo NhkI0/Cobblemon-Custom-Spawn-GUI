@@ -11,6 +11,8 @@ import sys
 import tarfile
 from shutil import rmtree
 
+from tqdm import tqdm
+
 try:
     import requests
 except ImportError:
@@ -30,6 +32,13 @@ BLANK_SPAWN = {
     "neededUninstalledMods": [],
     "spawns": [],
 }
+
+
+def set_blank():
+    with os.scandir(OUTPUT_DIR) as pokemons:
+        for pokemon in tqdm(pokemons):
+            with open(pokemon.path, "w") as f:
+                json.dump(BLANK_SPAWN, f, indent=4)
 
 
 def download_spawn_pool(output):

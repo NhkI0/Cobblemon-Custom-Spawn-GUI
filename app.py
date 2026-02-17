@@ -10,7 +10,7 @@ import re
 
 import streamlit as st
 
-from get_default_pokemons import reset
+from get_default_pokemons import reset, set_blank
 
 SPAWN_DIR = os.path.join(os.path.dirname(__file__), ".default", "spawn_pool_world")
 
@@ -478,6 +478,11 @@ def main():
         if st.button("Restore to default", type="primary", use_container_width=True):
             with st.spinner("Downloading", show_time=True):
                 reset()
+                st.rerun()
+
+        if st.button("Set all to blank", type="primary", use_container_width=True):
+            with st.spinner("Working", show_time=True):
+                set_blank()
                 st.rerun()
 
     # Use selected file as key prefix so each Pokémon gets isolated widget state
